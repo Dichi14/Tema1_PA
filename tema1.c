@@ -27,6 +27,55 @@ void add_player_to_team(Team *team, int player_index,char* firstName,char* secon
     team->player[player_index].points = points;
 }
 
+//CERINTA 2
+int puterea2(int echipe){ 
+    int n = 1;
+    while (n*2 <= echipe)
+    {
+        n = n*2; 
+    }
+    return n;
+}
+
+
+float find_min(Node* a){
+   
+    if(a == NULL) return -1;
+    Node* i = a;
+    float minim = i->team.score;
+    while(i != NULL){
+        if(i->team.score < minim) minim = i->team.score;
+
+        i = i->next;
+
+
+    }
+    return minim;
+}
+
+void deleteNode(Node** head , float point) {
+    if(*head == NULL) return;
+
+    Node* headcopy = *head ;
+    if(headcopy->team.score == point){ *head = (*head)->next;
+    free(headcopy);
+    return;
+    }
+    Node*prev = *head;
+    while (headcopy!= NULL)
+    {
+        if(headcopy->team.score != point){
+            prev=headcopy;
+            headcopy = headcopy->next;
+        }
+        else{
+            prev->next = headcopy->next;
+            free(headcopy);
+            return;
+        }
+    }
+    
+}
 
 
 
@@ -102,7 +151,37 @@ int main(int argc, char* argv[]){
         }
     }
      
-   fclose(fout);
+    if (cerinte[0]== 1 && cerinte[1] == 1){
+        int n = puterea2(nr_echipe);
+  
+        Node* current = head;
+
+        while (current != NULL)
+        {
+            for(int i = 0 ; i < current->team.number_players; i++)
+            {
+                current->team.score += current->team.player[i].points;
+            }
+
+            current->team.score /= current->team.number_players;
+            current = current->next;
+        }
+
+   
+    for(int i = nr_echipe ; i > n ; i--){
+        float nr_minimpct = find_min(head);
+        deleteNode(&head,nr_minimpct);
+
+    }
+
+    current = head;
+
+        while (current != NULL) {
+            fprintf(fout,"%s", current->team.name_team);
+            current = current->next;
+        }   
+
+    }fclose(fout);
 
 
 
