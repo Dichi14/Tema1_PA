@@ -1,4 +1,18 @@
+
 #include "player.h"
+
+#define WHITESPACE " \t\n\r\v\f"
+
+void trimString(char* str)
+{
+    size_t idx = strlen(str) - 1;
+    while (strchr(WHITESPACE, str[idx]) != NULL)
+        idx--;
+
+    str[idx + 1] = 0;
+    
+}
+
 
 Node* aloca_node(char* name_team,int nr){
     Node *new_node = (Node *)malloc(sizeof(Node));
@@ -7,8 +21,12 @@ Node* aloca_node(char* name_team,int nr){
         printf("Eroare\n");
         return NULL;
     }
+
+    new_node->team.name_team = (char*)malloc((strlen(name_team)+1)*sizeof(char));
+    
     
     strcpy(new_node->team.name_team, name_team);
+    trimString(new_node->team.name_team);
     new_node->team.number_players = nr;
 
     new_node->team.player = malloc(sizeof(struct Player)*nr);
@@ -49,6 +67,7 @@ float find_min(Node* a){
         i = i->next;
 
 
+
     }
     return minim;
 }
@@ -76,7 +95,6 @@ void deleteNode(Node** head , float point) {
     }
     
 }
-
 
 
 
@@ -114,9 +132,12 @@ int main(int argc, char* argv[]){
         int nr = 0 ;
         char name_team[100];
         fscanf(fin2,"%d",&nr);
-        fgetc(fin2);
+        while (fgetc(fin2)==' ' );
+        fseek(fin2,-1,SEEK_CUR);
         fgets(name_team,100,fin2);
+        
 
+             
         Node* new = aloca_node(name_team,nr);
 
         for(int j = 0 ; j < nr ; j++){
@@ -146,7 +167,7 @@ int main(int argc, char* argv[]){
         Node* current = head;
 
         while (current != NULL) {
-            fprintf(fout,"%s", current->team.name_team);
+            fprintf(fout,"%s\n", current->team.name_team);
             current = current->next;
         }
     }
@@ -177,14 +198,76 @@ int main(int argc, char* argv[]){
     current = head;
 
         while (current != NULL) {
-            fprintf(fout,"%s", current->team.name_team);
+            fprintf(fout,"%s\n", current->team.name_team);
             current = current->next;
         }   
 
-    }fclose(fout);
+    }
+
+    //cerinta 3
+      if(cerinte[2] == 1){
+      Queue* q;
+      q = createQueue();
+
+      Node *winners = NULL ;
+      Node *losers = NULL;
+
+        
+      for (Node* i = head ; i != NULL ; i = i->next)
+      {
+            enQueue(q,i->team);
+
+      }
+      
+        int echipe_active = puterea2(nr_echipe);
+
+        int nr_runda = 1;
+      while (echipe_active > 1)
+      {
+        Team echipa1;
+        Team echipa2;
+        fprintf(fout,"\n--- ROUND NO:%d\n",nr_runda);
+        while (!isEmptyq(q))
+        {   
+            echipa1 = deQueue(q);
+            echipa2 = deQueue(q);
+
+            fprintf(fout,"%-33s-%33s\n", echipa1.name_team , echipa2.name_team);
+            
+            if(echipa1.score > echipa2.score){
+                (echipa1.score)++;
+                push(&winners, echipa1);
+                push(&losers, echipa2);
+            }
+            else {
+                (echipa2.score)++;
+                push(&winners, echipa2);
+                push(&losers, echipa1);
+            }
+        }
+        fprintf(fout,"\nWINNERS OF ROUND NO:%d\n",nr_runda);
+
+        while (!isEmpty(winners))
+        {
+            echipa1 = pop(&winners);
+            fprintf(fout,"%-34s-  %.2f\n",echipa1.name_team,echipa1.score);
+            enQueue(q,echipa1);
+        }
+        
+        echipe_active/=2;
+        nr_runda++;
+
+        
+      }
+      
+
+        
+    }
 
 
+    
 
+    fclose(fout);
 
     return 0;
 }
