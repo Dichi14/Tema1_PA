@@ -289,8 +289,6 @@ int main(int argc, char* argv[]){
       
 
     }   
-
-
      
      if (cerinte[3] == 1) {
         BST* root = NULL;
@@ -304,9 +302,8 @@ int main(int argc, char* argv[]){
         fprintf(fout, "\r\nTOP 8 TEAMS:\r\n");
         printBST(root, fout);
     }
-    fclose(fout);
 
-    
+   
 
     return 0;
 }
