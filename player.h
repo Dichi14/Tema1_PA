@@ -23,7 +23,7 @@ typedef struct Team
 typedef struct Node
 {
     Team team;
-    struct Node *next;
+   struct Node *next;
 
 }Node;
 
@@ -31,7 +31,7 @@ struct Q{
     Node *front,*rear;
 };
 
-typedef struct Q Queue;
+typedef struct Q Queue ;
 
 
 
@@ -54,3 +54,20 @@ void enQueue (Queue*q,Team v);
 Team deQueue(Queue*q);
 
 Node* aloca_node(char* name_team,int nr);
+
+//task 4 
+
+typedef struct Q Queue;
+
+struct A 
+{
+    Team team;
+    struct A *left,*right;
+};
+typedef struct A BST;
+
+BST* newNode(Team data);
+
+BST* inserare(BST* node,Team key);
+
+void printBST(BST* root, FILE* file);

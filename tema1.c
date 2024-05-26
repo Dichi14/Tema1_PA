@@ -1,12 +1,12 @@
 
 #include "player.h"
 
-#define WHITESPACE " \t\n\r\v\f"
 
-void trimString(char* str)
+
+void eliminareSpatii(char* str)
 {
-    size_t idx = strlen(str) - 1;
-    while (strchr(WHITESPACE, str[idx]) != NULL)
+    int idx = strlen(str) - 1;
+    while (strchr(" \t\n\r\v\f", str[idx]) != NULL)
         idx--;
 
     str[idx + 1] = 0;
@@ -26,7 +26,7 @@ Node* aloca_node(char* name_team,int nr){
     
     
     strcpy(new_node->team.name_team, name_team);
-    trimString(new_node->team.name_team);
+    eliminareSpatii(new_node->team.name_team);
     new_node->team.number_players = nr;
 
     new_node->team.player = malloc(sizeof(struct Player)*nr);
@@ -39,11 +39,29 @@ Node* aloca_node(char* name_team,int nr){
     return new_node;
 }
 
+
+
 void add_player_to_team(Team *team, int player_index,char* firstName,char* secondName, int points) {
     team->player[player_index].firstName = strdup(firstName);
     team->player[player_index].secondName = strdup(secondName);
     team->player[player_index].points = points;
 }
+
+void insertNode(Node** head , Team echipa )
+{
+    Node* newNode = (Node*)malloc(sizeof(Node));
+
+    newNode->team = echipa;
+    newNode->next = NULL;
+
+    if(*head == NULL ){
+        *head = newNode;
+    }else{
+        newNode->next= *head;
+        *head = newNode;
+    }
+}
+
 
 //CERINTA 2
 int puterea2(int echipe){ 
@@ -205,13 +223,17 @@ int main(int argc, char* argv[]){
     }
 
     //cerinta 3
+     Node* lista_8 = NULL;
+
       if(cerinte[2] == 1){
       Queue* q;
       q = createQueue();
-
+     
       Node *winners = NULL ;
       Node *losers = NULL;
 
+      Team echipa1;
+      Team echipa2;
         
       for (Node* i = head ; i != NULL ; i = i->next)
       {
@@ -224,9 +246,10 @@ int main(int argc, char* argv[]){
         int nr_runda = 1;
       while (echipe_active > 1)
       {
-        Team echipa1;
-        Team echipa2;
+     
         fprintf(fout,"\n--- ROUND NO:%d\n",nr_runda);
+    
+        
         while (!isEmptyq(q))
         {   
             echipa1 = deQueue(q);
@@ -246,10 +269,14 @@ int main(int argc, char* argv[]){
             }
         }
         fprintf(fout,"\nWINNERS OF ROUND NO:%d\n",nr_runda);
-
+        
         while (!isEmpty(winners))
         {
             echipa1 = pop(&winners);
+            if(echipe_active == 16){
+                insertNode(&lista_8, echipa1);
+            }
+           
             fprintf(fout,"%-34s-  %.2f\n",echipa1.name_team,echipa1.score);
             enQueue(q,echipa1);
         }
@@ -261,13 +288,25 @@ int main(int argc, char* argv[]){
       }
       
 
-        
-    }
+    }   
 
+
+     
+     if (cerinte[3] == 1) {
+        BST* root = NULL;
+        Node* current = lista_8;
+        int count = 0;
+        while (current != NULL && count < 8) {
+            root = inserare(root, current->team);
+            current = current->next;
+            count++;
+        }
+        fprintf(fout, "\r\nTOP 8 TEAMS:\r\n");
+        printBST(root, fout);
+    }
+    fclose(fout);
 
     
-
-    fclose(fout);
 
     return 0;
 }

@@ -66,5 +66,44 @@ Team deQueue(Queue*q){
     if (q->front == NULL) q->rear = NULL;
 
     free(aux);
+ 
     return d;
 }
+//task  4 BST
+
+BST* newNode(Team data){
+    BST* node = (BST*)malloc(sizeof(BST));
+    node->team =  data;
+    node->left = node->right = NULL;
+    return node;
+}
+
+BST* inserare(BST* node,Team key){
+    if(node == NULL ) return newNode(key);
+
+    if(key.score < node->team.score){
+        node->left = inserare(node->left,key);
+    }
+    else if(key.score > node->team.score){
+        node->right= inserare(node->right, key);
+    }else if(key.score == node->team.score){
+        if(strcmp(node->team.name_team,key.name_team ) > 0){
+            node->left = inserare(node->left,key);
+
+        }else{
+            node->right = inserare(node->right,key);
+        }
+    }
+        return node;
+}
+
+void printBST(BST* root, FILE* file) {
+    if (root == NULL) {
+        return;
+    }
+
+    printBST(root->right, file);
+    fprintf(file, "%-34s-  %.2f\r\n", root->team.name_team, root->team.score);
+    printBST(root->left, file);
+}
+
